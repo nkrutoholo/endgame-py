@@ -79,10 +79,14 @@ class workWithDb:
             self.cursor = self.conn.cursor()
             self.cursor.execute(f"USE {self.database}")
             self.cursor.execute(sql)
+
+            rowcount = self.cursor.rowcount
+            lastrowid = self.cursor.lastrowid
+
             self.conn.close()
 
-            print(self.cursor.rowcount, "record inserted.")
-            return self.cursor.lastrowid
+            print(rowcount, "record inserted.")
+            return lastrowid
         except mysql.connector.Error as err:
             print(err)
 
@@ -101,9 +105,8 @@ class workWithDb:
                                  f"h_method = '{h_method}', url = '{url}', status = {status},"
                                  f'params = "{params}", body = "{body}", headers = "{headers}" '
                                  f"WHERE id = {req_id};")
-            self.conn.close()
-
             print(self.cursor.rowcount, "record updated.")
+            self.conn.close()
         except mysql.connector.Error as err:
             print(err)
 
@@ -185,9 +188,9 @@ class workWithDb:
             self.cursor = self.conn.cursor()
             self.cursor.execute(f"USE {self.database}")
             self.cursor.execute(f"DELETE FROM Requests WHERE id = {req_id};")
-            self.conn.close()
 
             print(self.cursor.rowcount, "record inserted.")
+            self.conn.close()
         except mysql.connector.Error as err:
             print(err)
 
@@ -202,9 +205,8 @@ class workWithDb:
             self.cursor.execute(f"USE {self.database}")
             self.cursor.execute("INSERT INTO Responses (req_id, resp_code, result)"
                                 f'VALUES({req_id}, {resp_code}, "{result}")')
-            self.conn.close()
-
             print(self.cursor.rowcount, "record inserted.")
+            self.conn.close()
         except mysql.connector.Error as err:
             print(err)
 
@@ -221,9 +223,8 @@ class workWithDb:
             self.cursor.execute(f"UPDATE Responses SET "
                                 f'resp_code = {resp_code}, result = "{result}" '
                                 f"WHERE id = {req_id}")
-            self.conn.close()
-
             print(self.cursor.rowcount, "record inserted.")
+            self.conn.close()
         except mysql.connector.Error as err:
             print(err)
 
@@ -239,9 +240,9 @@ class workWithDb:
             self.cursor = self.conn.cursor()
             self.cursor.execute(f"USE {self.database}")
             self.cursor.execute(f"DELETE FROM Responses WHERE id = {req_id};")
-            self.conn.close()
 
             print(self.cursor.rowcount, "record inserted.")
+            self.conn.close()
         except mysql.connector.Error as err:
             print(err)
 
@@ -274,9 +275,8 @@ class workWithDb:
                 self.selectRequests(int(req_id))
                 req_id = input('Enter request index to view full info, or "q" to quit: ')
 
-            self.conn.close()
-
             print(self.cursor.rowcount, "record inserted.")
+            self.conn.close()
         except mysql.connector.Error as err:
             print(err)
 
