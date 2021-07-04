@@ -138,15 +138,24 @@ def render_packed(root, db=None):
                             headers=widgetsToDict(headers), auth=None, body=widgetsToDict(body), trig=False, label=info)
         fillingHistory(history, db)
         if data:
+            tree.delete(*tree.get_children())
             if res_view.get() == "TreeView":
-                tree.delete(*tree.get_children())
                 string = "{" + f'{len(data)}' + "}"
                 bId = tree.insert('', 0, text=string)
                 recForTree(tree, bId, data, 2)
-            # if res_view.get() == "Table":
-            #     funcForTable(tree, data)
+            elif res_view.get() == "Table":
+                funcForTable(tree, data)
+            elif res_view.get() == "Yaml":
+                yaml_res = yaml.dump(data)
+                tree.insert('', 0, text=str(yaml_res))
+            elif res_view.get() == "Json":
+                json_result = json.dumps(data, indent=4)
+                tree.insert('', 0, text=str(json_result))
+            elif res_view.get() == "Raw":
+                tree.insert('', 0, text=str(data))
 
-    send_button = tk.Button(frame1, text="SEND", command=send_request)
+
+    send_button = ttk.Button(frame1, text="SEND", command=send_request)
     send_button.grid(row=0, column=7, columnspan=2)
 
     #info label
@@ -157,67 +166,67 @@ def render_packed(root, db=None):
     f_params = ttk.Frame(frame1)
     f_params.grid(row=4, column=0, columnspan=8)
 
-    tk.Label(f_params, text="Params").grid(row=0, column=0)
+    ttk.Label(f_params, text="Params").grid(row=0, column=0)
 
     def add_params():
-        entryKey = tk.Entry(f_params)
+        entryKey = ttk.Entry(f_params)
         entryKey.grid(row=len(params) + 1, column=0)
-        entryValue = tk.Entry(f_params)
+        entryValue = ttk.Entry(f_params)
         entryValue.grid(row=len(params) + 1, column=4)
         params[entryKey] = entryValue
 
     params = {}
-    entryKey = tk.Entry(f_params)
+    entryKey = ttk.Entry(f_params)
     entryKey.grid(row=1, column=0)
-    entryValue = tk.Entry(f_params)
+    entryValue = ttk.Entry(f_params)
     entryValue.grid(row=1, column=4)
     params[entryKey] = entryValue
 
-    tk.Button(f_params, text="+", command=add_params).grid(row=1, column=8)
+    ttk.Button(f_params, text="+", command=add_params).grid(row=1, column=8)
 
     #body
     f_body = ttk.Frame(frame1)
     f_body.grid(row=10, column=0, columnspan=8)
 
-    tk.Label(f_body, text="Body").grid(row=0, column=0)
+    ttk.Label(f_body, text="Body").grid(row=0, column=0)
 
     def add_body():
-        entryKeybody = tk.Entry(f_body)
+        entryKeybody = ttk.Entry(f_body)
         entryKeybody.grid(row=len(body) + 1, column=0)
-        entryValuebody = tk.Entry(f_body)
+        entryValuebody = ttk.Entry(f_body)
         entryValuebody.grid(row=len(body) + 1, column=4)
         body[entryKeybody] = entryValuebody
 
     body = {}
-    entryKeybody = tk.Entry(f_body)
+    entryKeybody = ttk.Entry(f_body)
     entryKeybody.grid(row=1, column=0)
-    entryValuebody = tk.Entry(f_body)
+    entryValuebody = ttk.Entry(f_body)
     entryValuebody.grid(row=1, column=4)
     body[entryKeybody] = entryValuebody
 
-    tk.Button(f_body, text="+", command=add_body).grid(row=1, column=8)
+    ttk.Button(f_body, text="+", command=add_body).grid(row=1, column=8)
 
     #headers
     f_headers = ttk.Frame(frame1)
     f_headers.grid(row=16, column=0, columnspan=8)
 
-    tk.Label(f_headers, text="Headers").grid(row=0, column=0)
+    ttk.Label(f_headers, text="Headers").grid(row=0, column=0)
 
     def add_headers():
-        entryKeyHeaders = tk.Entry(f_headers)
+        entryKeyHeaders = ttk.Entry(f_headers)
         entryKeyHeaders.grid(row=len(headers) + 1, column=0)
-        entryValueHeaders = tk.Entry(f_headers)
+        entryValueHeaders = ttk.Entry(f_headers)
         entryValueHeaders.grid(row=len(headers) + 1, column=4)
         headers[entryKeyHeaders] = entryValueHeaders
 
     headers = {}
-    entryKeyHeaders = tk.Entry(f_headers)
+    entryKeyHeaders = ttk.Entry(f_headers)
     entryKeyHeaders.grid(row=1, column=0)
-    entryValueHeaders = tk.Entry(f_headers)
+    entryValueHeaders = ttk.Entry(f_headers)
     entryValueHeaders.grid(row=1, column=4)
     headers[entryKeyHeaders] = entryValueHeaders
 
-    tk.Button(f_headers, text="+", command=add_headers).grid(row=1, column=8)
+    ttk.Button(f_headers, text="+", command=add_headers).grid(row=1, column=8)
 
 
     #response view
@@ -248,9 +257,12 @@ def visual_start(db):
     root.configure(background='grey')
     root.resizable(False, False)
 
-    s = ttk.Style()
-    s.theme_use('default')
-    # ('aqua', 'step', 'clam', 'alt', 'default', 'classic')
+    style = ttk.Style()
+    style.theme_use('default')
+    style.configure('TLabel', background='#fc8c03', foreground="#F0FFF0")
+    style.configure('TButton', background='#fc8c03', foreground='#191970', activebackground='#F4A460')
+    style.configure('TEntry', fieldbackground='white')
+
 
     render_packed(root, db=db)
 
