@@ -3,7 +3,6 @@ from visual_part import *
 from manual_start import *
 import argparse
 import sys
-import yaml
 
 def make_dict_config():
     with open('cfg.yaml', 'r') as file:
@@ -25,6 +24,7 @@ class splitAction(argparse.Action):
 
 
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--gui", help="launch GUI", action="store_true")
     parser.add_argument("--history", help="show/clear history", type=str, choices=["show", "clear"])
@@ -38,9 +38,14 @@ if __name__ == '__main__':
     parser.add_argument("--yaml", help="specify type of view", action="store_true")
 
     args = parser.parse_args()
-    config = make_dict_config()
-    myDb = workWithDb(config["settings"]["host"], config["settings"]["user"],
+
+    try:
+        config = make_dict_config()
+        myDb = workWithDb(config["settings"]["host"], config["settings"]["user"],
                       config["settings"]["password"], config["settings"]["database"])
+    except KeyError as err:
+        print_stderr(err)
+
     if args.gui:
         visual_start(db=myDb)
     elif args.history:

@@ -1,6 +1,6 @@
 ENDGAME Python
 
 WHAT TO INSTALL:
-    pip install pyyaml
-    pip install prettytable
-    pip install tk
+* python3 -m venv venv/
+* source venv/bin/activate
+* pip install -r requirements.txt
